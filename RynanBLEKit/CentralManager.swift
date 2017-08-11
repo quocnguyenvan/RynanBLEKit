@@ -10,7 +10,7 @@ import CoreBluetooth
 
 // MARK: - CentralManager -
 
-public class CentralManager : NSObject, CBCentralManagerDelegate {
+public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     
     private(set) var centralManager : CBCentralManager?
     var delegate : BluetoothDelegate?
@@ -116,6 +116,44 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
         connectedPeripheral.discoverDescriptors(for: characteristic)
     }
     
+    func discoverCharacteristics() {
+        guard let connectedPeripheral = connectedPeripheral,
+            let services = connectedPeripheral.services, services.count > 0 else { return }
+        for service in services {
+            connectedPeripheral.discoverCharacteristics(nil, for: service)
+        }
+    }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("Bluetooth Manager --> didDiscoverServices")
+        guard let delegate = self.delegate else { return }
+        connectedPeripheral = peripheral
+        if error != nil { return }
+        
+        // If discover services, then invalidate the timeout monitor
+        if interrogateMonitor != nil {
+            interrogateMonitor?.invalidate()
+            interrogateMonitor = nil
+        }
+        
+        delegate.didDiscoverServices?(peripheral)
+    }
+    
+    func readValueForCharacteristic(characteristic: CBCharacteristic) {
+        guard let connectedPeripheral = connectedPeripheral else { return }
+        connectedPeripheral.readValue(for: characteristic)
+    }
+    
+    func setNotification(enable: Bool, forCharacteristic characteristic: CBCharacteristic){
+        guard let connectedPeripheral = connectedPeripheral else { return }
+        connectedPeripheral.setNotifyValue(enable, for: characteristic)
+    }
+    
+    func writeValue(data: Data, forCharacteristic characteristic: CBCharacteristic, type: CBCharacteristicWriteType) {
+        guard let connectedPeripheral = connectedPeripheral else { return }
+        connectedPeripheral.writeValue(data, for: characteristic, type: type)
+    }
+    
     // MARK: CBCentralManagerDelegate
     
     /** Update state of central manager */
@@ -140,8 +178,8 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     
     /** Discovery of peripheral by central */
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-//        print("Central Manager -> didDiscoverPeripheral, RSSI:\(RSSI)")
         guard let delegate = delegate else { return }
+//        print("Central Manager -> didDiscoverPeripheral, rssi:\(RSSI)")
         delegate.didDiscoverPeripheral?(peripheral, advertisementData: advertisementData, RSSI: RSSI)
     }
     
@@ -157,8 +195,8 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
         connected = true
         connectedPeripheral = peripheral
         delegate.didConnectedPeripheral?(peripheral)
-        stopScanPeripheral()
-//        peripheral.delegate = self
+        self.stopScanPeripheral()
+        peripheral.delegate = self
         peripheral.discoverServices(nil)
 //        interrogateMonitor = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(self.integrrogateTimeout(_:)), userInfo: peripheral, repeats: false)
     }

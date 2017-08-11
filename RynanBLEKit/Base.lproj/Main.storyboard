@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="y8n-jr-baf">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Thonburi.ttc">
+            <string>Thonburi</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -43,6 +49,130 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="50" y="321"/>
+        </scene>
+        <!--Example-->
+        <scene sceneID="fLS-QU-ID4">
+            <objects>
+                <viewController id="nR1-JZ-88V" customClass="ViewController" customModule="RynanBLEKit" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ZkU-aD-ufv"/>
+                        <viewControllerLayoutGuide type="bottom" id="5kI-14-2f3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1Vx-Bn-r4K">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="74" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="EQO-e4-KSc">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PeripheralCell" rowHeight="74" id="vqF-cz-iBZ" customClass="PeripheralCell" customModule="RynanBLEKit" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="74"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vqF-cz-iBZ" id="tRE-5V-HRY">
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="74"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="Qyu-lR-xYc">
+                                                    <rect key="frame" x="20" y="18" width="276" height="28"/>
+                                                    <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="21"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="None" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l4b-Ij-MGW">
+                                                    <rect key="frame" x="89" y="48" width="37.5" height="20"/>
+                                                    <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="15"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Services:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CeO-mo-HqH">
+                                                    <rect key="frame" x="20" y="48" width="65" height="20"/>
+                                                    <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="15"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" alpha="0.94999998807907104" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RSSI-0" translatesAutoresizingMaskIntoConstraints="NO" id="cZd-dZ-z9D">
+                                                    <rect key="frame" x="304" y="22" width="30" height="30"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-99" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DdE-dC-Zi1">
+                                                    <rect key="frame" x="306" y="53" width="26" height="20"/>
+                                                    <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="15"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="cZd-dZ-z9D" firstAttribute="centerY" secondItem="tRE-5V-HRY" secondAttribute="centerY" id="2SB-9R-d6H"/>
+                                                <constraint firstItem="DdE-dC-Zi1" firstAttribute="centerX" secondItem="cZd-dZ-z9D" secondAttribute="centerX" id="2XH-e8-NEG"/>
+                                                <constraint firstItem="CeO-mo-HqH" firstAttribute="top" secondItem="tRE-5V-HRY" secondAttribute="topMargin" constant="40" id="5YW-cQ-9Zw"/>
+                                                <constraint firstItem="CeO-mo-HqH" firstAttribute="leading" secondItem="tRE-5V-HRY" secondAttribute="leadingMargin" constant="12" id="5sk-ik-n5r"/>
+                                                <constraint firstItem="Qyu-lR-xYc" firstAttribute="leading" secondItem="tRE-5V-HRY" secondAttribute="leadingMargin" constant="12" id="EeA-DJ-ngh"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Qyu-lR-xYc" secondAttribute="trailing" constant="38" id="N76-Sk-qSR"/>
+                                                <constraint firstItem="DdE-dC-Zi1" firstAttribute="top" secondItem="cZd-dZ-z9D" secondAttribute="bottom" constant="1" id="VIO-fn-E6d"/>
+                                                <constraint firstItem="l4b-Ij-MGW" firstAttribute="top" secondItem="tRE-5V-HRY" secondAttribute="topMargin" constant="40" id="aZV-py-H6a"/>
+                                                <constraint firstItem="l4b-Ij-MGW" firstAttribute="leading" secondItem="tRE-5V-HRY" secondAttribute="leadingMargin" constant="81" id="iWJ-TA-j2l"/>
+                                                <constraint firstItem="Qyu-lR-xYc" firstAttribute="top" secondItem="tRE-5V-HRY" secondAttribute="topMargin" constant="10" id="phs-pC-aNo"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="cZd-dZ-z9D" secondAttribute="trailing" constant="41" id="6us-gl-MVk"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="nameLabel" destination="Qyu-lR-xYc" id="q2t-S9-uV0"/>
+                                            <outlet property="rssiImage" destination="cZd-dZ-z9D" id="ONi-eQ-qVS"/>
+                                            <outlet property="rssiLabel" destination="DdE-dC-Zi1" id="kxW-HO-zOS"/>
+                                            <outlet property="servicesLabel" destination="l4b-Ij-MGW" id="Jw0-fI-1vK"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="nR1-JZ-88V" id="pdz-fM-Maa"/>
+                                    <outlet property="delegate" destination="nR1-JZ-88V" id="d8f-4b-fCj"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="5kI-14-2f3" firstAttribute="top" secondItem="EQO-e4-KSc" secondAttribute="bottom" id="O7x-g6-mKK"/>
+                            <constraint firstItem="EQO-e4-KSc" firstAttribute="top" secondItem="ZkU-aD-ufv" secondAttribute="bottom" id="bMq-z3-kPW"/>
+                            <constraint firstAttribute="trailing" secondItem="EQO-e4-KSc" secondAttribute="trailing" id="p6h-wp-4Rk"/>
+                            <constraint firstItem="EQO-e4-KSc" firstAttribute="leading" secondItem="1Vx-Bn-r4K" secondAttribute="leading" id="zgo-tZ-gMO"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" title="Example" id="mU7-nY-n5B">
+                        <barButtonItem key="backBarButtonItem" title=" " id="7nl-Y6-wJS"/>
+                        <barButtonItem key="rightBarButtonItem" title="Scan" style="plain" id="71X-LS-jvQ"/>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="tblScanned" destination="EQO-e4-KSc" id="lA2-9P-RbU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3lR-7n-FSK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="854" y="-376"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="dHX-Ez-iNa">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="y8n-jr-baf" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="wnc-4P-iNB">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="nR1-JZ-88V" kind="relationship" relationship="rootViewController" id="edg-wb-JrQ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uqu-sj-gtf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="49" y="-376"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="RSSI-0" width="30" height="30"/>
+    </resources>
 </document>

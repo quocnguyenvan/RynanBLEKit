@@ -16,6 +16,7 @@
 		1788A3C21F3D49440042391C /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C11F3D49440042391C /* Peripheral.swift */; };
 		1788A3C41F3D49CF0042391C /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C31F3D49CF0042391C /* CentralManager.swift */; };
 		1788A3C61F3D5C4B0042391C /* Characteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C51F3D5C4B0042391C /* Characteristic.swift */; };
+		1788A3C81F3DB4F30042391C /* PeripheralCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C71F3DB4F30042391C /* PeripheralCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		1788A3C11F3D49440042391C /* Peripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peripheral.swift; sourceTree = "<group>"; };
 		1788A3C31F3D49CF0042391C /* CentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManager.swift; sourceTree = "<group>"; };
 		1788A3C51F3D5C4B0042391C /* Characteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Characteristic.swift; sourceTree = "<group>"; };
+		1788A3C71F3DB4F30042391C /* PeripheralCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 		1788A3AC1F3D46870042391C /* RynanBLEKit */ = {
 			isa = PBXGroup;
 			children = (
+				1788A3C71F3DB4F30042391C /* PeripheralCell.swift */,
 				1788A3AD1F3D46870042391C /* AppDelegate.swift */,
 				1788A3AF1F3D46870042391C /* ViewController.swift */,
 				1788A3B11F3D46870042391C /* Main.storyboard */,
@@ -149,6 +152,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1788A3C81F3DB4F30042391C /* PeripheralCell.swift in Sources */,
 				1788A3C61F3D5C4B0042391C /* Characteristic.swift in Sources */,
 				1788A3B01F3D46870042391C /* ViewController.swift in Sources */,
 				1788A3C01F3D46E20042391C /* BluetoothDelegate.swift in Sources */,
