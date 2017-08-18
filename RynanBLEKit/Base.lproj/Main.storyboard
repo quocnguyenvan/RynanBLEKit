@@ -13,7 +13,7 @@
         <!--Peripheral-->
         <scene sceneID="fLS-QU-ID4">
             <objects>
-                <viewController id="nR1-JZ-88V" customClass="PeripheralController" customModule="RynanBLEKit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="nR1-JZ-88V" customClass="PeripheralsController" customModule="RynanBLEKit" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ZkU-aD-ufv"/>
                         <viewControllerLayoutGuide type="bottom" id="5kI-14-2f3"/>
@@ -115,7 +115,7 @@
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" title="Peripheral" id="mU7-nY-n5B"/>
                     <connections>
-                        <outlet property="tblScanned" destination="EQO-e4-KSc" id="lA2-9P-RbU"/>
+                        <outlet property="tblScanned" destination="EQO-e4-KSc" id="zwx-0V-1OJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3lR-7n-FSK" userLabel="First Responder" sceneMemberID="firstResponder"/>
