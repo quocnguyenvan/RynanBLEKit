@@ -12,30 +12,66 @@ import CoreBluetooth
 
 public class Peripheral: NSObject, CBPeripheralDelegate {
     
-    private let peripheral: CBPeripheral?
-    private let centralManager: CentralManager?
+    public var peripheral: CBPeripheral?
+    private var centralManager: CentralManager?
+    fileprivate var rnCharacteristic: CBCharacteristic?
+    fileprivate var rnService: CBService?
     
-    init(peripheral: CBPeripheral, centralManager: CentralManager) {
-//        peripheral.delegate = Peripheral as? CBPeripheralDelegate
+    init(peripheral: CBPeripheral) {
         self.peripheral = peripheral
-        self.centralManager = centralManager
+//        self.centralManager = centralManager
         super.init()
+        self.peripheral?.delegate = self
     }
     
+    deinit {
+        self.peripheral?.delegate = nil
+    }
+    
+    class func deviceServiceUUID() -> CBUUID{
+        return CBUUID(string:"181C")
+    }
+    
+    class func deviceCharacteristicUUID() -> CBUUID{
+        return CBUUID(string:"2A99")
+    }
+    
+    public var state: CBPeripheralState {
+        return (peripheral?.state)!
+    }
+    
+    public var isConnected: Bool {
+        return peripheral?.state == .connected
+    }
+    
+    public var name: String? {
+        return peripheral?.name ?? "Unknown"
+    }
+    
+    public var identifier: UUID {
+        return (peripheral?.identifier)!
+    }
+    
+    public var service: [CBService]? {
+        guard let services = peripheral?.services else { return nil }
+    
+        return services // filter { $0.uuid.uuidString == serviceUUID }.first
+    }
+
     /** Read value of characteristic */
-    func readValueForCharacteristic(characteristic: CBCharacteristic) {
+    func readData(for characteristic: CBCharacteristic) {
         guard let peripheral = peripheral else { return }
         peripheral.readValue(for: characteristic)
     }
     
     /** Write value for characteristic */
-    func writeValue(data: Data, forCharacteristic characteristic: CBCharacteristic, type: CBCharacteristicWriteType = .withResponse) {
+    func writeData(data: Data, forCharacteristic characteristic: CBCharacteristic, type: CBCharacteristicWriteType = .withResponse) {
         guard let peripheral = peripheral else { return }
         peripheral.writeValue(data, for: characteristic, type: type)
     }
     
     /** Set notification */
-    func setNotification(enable: Bool, forCharacteristic characteristic: CBCharacteristic){
+    func setNotify(enable: Bool, forCharacteristic characteristic: CBCharacteristic){
         guard let peripheral = peripheral else { return }
         peripheral.setNotifyValue(enable, for: characteristic)
     }
@@ -43,11 +79,26 @@ public class Peripheral: NSObject, CBPeripheralDelegate {
     /** Services were discoverd */
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         print("Peripheral -> didDiscoverServices")
+        guard let services = peripheral.services else { return }
+        for service in services {
+            if service.uuid.uuidString == "181C" {
+                peripheral.discoverCharacteristics(nil, for: service)
+                print("didDiscoverServices: \(service)")
+            }
+        }
     }
     
     /** Characteristics were discovered */
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         print("Peripheral -> didDiscoverCharacteristics")
+        for characteristic in service.characteristics! {
+            let thisCharacteristic = characteristic as CBCharacteristic
+            
+            if thisCharacteristic.uuid.uuidString == "2A99" {
+                // If it is, subscribe to it
+                peripheral.setNotifyValue(true, for: thisCharacteristic)
+            }
+        }
     }
     
     /** Discovery descriptor when the peripheral has found the descriptor for the characteristic */
