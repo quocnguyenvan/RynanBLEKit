@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		175C1F611F4699F2001E513B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177500701F43DBE600B5FC6F /* Extensions.swift */; };
+		1772A2B31F453EEE0090A6EE /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1772A2B21F453EEE0090A6EE /* ActivityView.swift */; };
+		1772A2B51F456AE50090A6EE /* PeripheralCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1772A2B41F456AE50090A6EE /* PeripheralCell.xib */; };
+		1772A2B81F45967C0090A6EE /* BluetoothRequireView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1772A2B71F45967C0090A6EE /* BluetoothRequireView.swift */; };
 		1788A3AE1F3D46870042391C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3AD1F3D46870042391C /* AppDelegate.swift */; };
-		1788A3B01F3D46870042391C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3AF1F3D46870042391C /* ViewController.swift */; };
+		1788A3B01F3D46870042391C /* PeripheralsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3AF1F3D46870042391C /* PeripheralsController.swift */; };
 		1788A3B31F3D46870042391C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1788A3B11F3D46870042391C /* Main.storyboard */; };
 		1788A3B51F3D46870042391C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1788A3B41F3D46870042391C /* Assets.xcassets */; };
 		1788A3B81F3D46870042391C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1788A3B61F3D46870042391C /* LaunchScreen.storyboard */; };
@@ -17,12 +21,18 @@
 		1788A3C41F3D49CF0042391C /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C31F3D49CF0042391C /* CentralManager.swift */; };
 		1788A3C61F3D5C4B0042391C /* Characteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C51F3D5C4B0042391C /* Characteristic.swift */; };
 		1788A3C81F3DB4F30042391C /* PeripheralCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C71F3DB4F30042391C /* PeripheralCell.swift */; };
+		17ADF8E91F4182B100A8927A /* PeripheralController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADF8E81F4182B100A8927A /* PeripheralController.swift */; };
+		17ADF8EB1F41AC0C00A8927A /* Injectables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADF8EA1F41AC0C00A8927A /* Injectables.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1772A2B21F453EEE0090A6EE /* ActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		1772A2B41F456AE50090A6EE /* PeripheralCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PeripheralCell.xib; sourceTree = "<group>"; };
+		1772A2B71F45967C0090A6EE /* BluetoothRequireView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothRequireView.swift; sourceTree = "<group>"; };
+		177500701F43DBE600B5FC6F /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1788A3AA1F3D46870042391C /* RynanBLEKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RynanBLEKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1788A3AD1F3D46870042391C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1788A3AF1F3D46870042391C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1788A3AF1F3D46870042391C /* PeripheralsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralsController.swift; sourceTree = "<group>"; };
 		1788A3B21F3D46870042391C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1788A3B41F3D46870042391C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1788A3B71F3D46870042391C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -32,6 +42,8 @@
 		1788A3C31F3D49CF0042391C /* CentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManager.swift; sourceTree = "<group>"; };
 		1788A3C51F3D5C4B0042391C /* Characteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Characteristic.swift; sourceTree = "<group>"; };
 		1788A3C71F3DB4F30042391C /* PeripheralCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralCell.swift; sourceTree = "<group>"; };
+		17ADF8E81F4182B100A8927A /* PeripheralController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralController.swift; sourceTree = "<group>"; };
+		17ADF8EA1F41AC0C00A8927A /* Injectables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Injectables.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +57,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1772A2B61F4583870090A6EE /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1788A3BF1F3D46E20042391C /* BluetoothDelegate.swift */,
+				1788A3C31F3D49CF0042391C /* CentralManager.swift */,
+				1788A3C11F3D49440042391C /* Peripheral.swift */,
+				1788A3C51F3D5C4B0042391C /* Characteristic.swift */,
+				177500701F43DBE600B5FC6F /* Extensions.swift */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
 		1788A3A11F3D46870042391C = {
 			isa = PBXGroup;
 			children = (
@@ -64,17 +88,19 @@
 		1788A3AC1F3D46870042391C /* RynanBLEKit */ = {
 			isa = PBXGroup;
 			children = (
+				1772A2B61F4583870090A6EE /* Sources */,
 				1788A3C71F3DB4F30042391C /* PeripheralCell.swift */,
 				1788A3AD1F3D46870042391C /* AppDelegate.swift */,
-				1788A3AF1F3D46870042391C /* ViewController.swift */,
+				1788A3AF1F3D46870042391C /* PeripheralsController.swift */,
 				1788A3B11F3D46870042391C /* Main.storyboard */,
 				1788A3B41F3D46870042391C /* Assets.xcassets */,
 				1788A3B61F3D46870042391C /* LaunchScreen.storyboard */,
+				1772A2B41F456AE50090A6EE /* PeripheralCell.xib */,
 				1788A3B91F3D46870042391C /* Info.plist */,
-				1788A3BF1F3D46E20042391C /* BluetoothDelegate.swift */,
-				1788A3C11F3D49440042391C /* Peripheral.swift */,
-				1788A3C31F3D49CF0042391C /* CentralManager.swift */,
-				1788A3C51F3D5C4B0042391C /* Characteristic.swift */,
+				17ADF8E81F4182B100A8927A /* PeripheralController.swift */,
+				17ADF8EA1F41AC0C00A8927A /* Injectables.swift */,
+				1772A2B21F453EEE0090A6EE /* ActivityView.swift */,
+				1772A2B71F45967C0090A6EE /* BluetoothRequireView.swift */,
 			);
 			path = RynanBLEKit;
 			sourceTree = "<group>";
@@ -139,6 +165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1772A2B51F456AE50090A6EE /* PeripheralCell.xib in Resources */,
 				1788A3B81F3D46870042391C /* LaunchScreen.storyboard in Resources */,
 				1788A3B51F3D46870042391C /* Assets.xcassets in Resources */,
 				1788A3B31F3D46870042391C /* Main.storyboard in Resources */,
@@ -154,9 +181,14 @@
 			files = (
 				1788A3C81F3DB4F30042391C /* PeripheralCell.swift in Sources */,
 				1788A3C61F3D5C4B0042391C /* Characteristic.swift in Sources */,
-				1788A3B01F3D46870042391C /* ViewController.swift in Sources */,
+				1788A3B01F3D46870042391C /* PeripheralsController.swift in Sources */,
+				17ADF8EB1F41AC0C00A8927A /* Injectables.swift in Sources */,
 				1788A3C01F3D46E20042391C /* BluetoothDelegate.swift in Sources */,
 				1788A3AE1F3D46870042391C /* AppDelegate.swift in Sources */,
+				1772A2B81F45967C0090A6EE /* BluetoothRequireView.swift in Sources */,
+				175C1F611F4699F2001E513B /* Extensions.swift in Sources */,
+				17ADF8E91F4182B100A8927A /* PeripheralController.swift in Sources */,
+				1772A2B31F453EEE0090A6EE /* ActivityView.swift in Sources */,
 				1788A3C21F3D49440042391C /* Peripheral.swift in Sources */,
 				1788A3C41F3D49CF0042391C /* CentralManager.swift in Sources */,
 			);
@@ -322,6 +354,7 @@
 				1788A3BE1F3D46870042391C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
