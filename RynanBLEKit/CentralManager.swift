@@ -16,7 +16,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     var bluetoothDelegate: BluetoothDelegate?
     
     public var discoveredPeripherals = [CBPeripheral]()
-    public var peripheralsInfo : [CBPeripheral:Dictionary<String, AnyObject>] = [CBPeripheral:Dictionary<String, AnyObject>]()
+    public var peripheralsInfo: [UUID : Dictionary<String, AnyObject>] = [UUID : Dictionary<String, AnyObject>]()
     
     var state: CBManagerState? {
         guard let manager = centralManager else { return nil }
@@ -160,11 +160,11 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         if !discoveredPeripherals.contains(peripheral) {
             discoveredPeripherals.append(peripheral)
             
-            peripheralsInfo[peripheral] = ["RSSI": RSSI, "advertisementData": advertisementData as AnyObject]
+            peripheralsInfo[peripheral.identifier] = ["RSSI": RSSI, "advertisementData": advertisementData as AnyObject]
             print("advertisementData: \(advertisementData) rssi: \(RSSI)")
         } else {
-            peripheralsInfo[peripheral]!["RSSI"] = RSSI
-            peripheralsInfo[peripheral]!["advertisementData"] = advertisementData as AnyObject?
+            peripheralsInfo[peripheral.identifier]!["RSSI"] = RSSI
+            peripheralsInfo[peripheral.identifier]!["advertisementData"] = advertisementData as AnyObject?
         }
         delegate.didDiscoverPeripheral?(peripheral, advertisementData: advertisementData, RSSI: RSSI)
     }
@@ -177,7 +177,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         connected = true
         connectedPeripheral = peripheral
         delegate.didConnectedPeripheral?(peripheral)
-        self.stopScanPeripheral()
+//        self.stopScanPeripheral()
         peripheral.delegate = self
         peripheral.discoverServices(nil)
     }

@@ -20,7 +20,7 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
     var activityView: ActivityView?
     let centralManager = CentralManager.getInstance()
     var peripheralsArray : [CBPeripheral] = []
-    var peripheralsInfo : [CBPeripheral:Dictionary<String, AnyObject>] = [CBPeripheral:Dictionary<String, AnyObject>]()
+    var peripheralsInfo : [UUID : Dictionary<String, AnyObject>] = [UUID : Dictionary<String, AnyObject>]()
     
     @IBOutlet weak var tblScanned: UITableView!
     
@@ -139,10 +139,10 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
         if let services = peripheral.services {
             print("MainController -> didDiscoverService:\(services)")
             ActivityView.hide()
-            let peripheralController = storyboard?.instantiateViewController(withIdentifier: "PeripheralController") as! PeripheralController
-            let peripheralInfo = centralManager.peripheralsInfo[peripheral]
-            peripheralController.lastAdvertisementData = peripheralInfo!["advertisementData"] as? Dictionary<String, AnyObject>
-            self.navigationController?.pushViewController(peripheralController, animated: true)
+            let vc = storyboard?.instantiateViewController(withIdentifier: "ServicesController") as! ServicesController
+            let peripheralInfo = centralManager.peripheralsInfo[peripheral.identifier]
+            vc.advertisementData = peripheralInfo!["advertisementData"] as? Dictionary<String, AnyObject>
+            self.navigationController?.pushViewController(vc, animated: true)
             
 //            for service in services {
 //                let thisService = service as CBService
@@ -171,17 +171,17 @@ extension PeripheralsController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PeripheralCell", for: indexPath) as! PeripheralCell
         
         let peripheral = centralManager.discoveredPeripherals[indexPath.row]
-        let peripheralInfo = centralManager.peripheralsInfo[peripheral]
+        let peripheralInfo = centralManager.peripheralsInfo[peripheral.identifier]
         //        if let peripheralCell = cell as? ScannedPeripheralCell {
         //            peripheralCell.configure(with: peripheral)
         //        }
         cell.nameLabel.text = peripheral.peripheralName
         
         if let serviceUUIDs = peripheralInfo!["advertisementData"]!["kCBAdvDataServiceUUIDs"] as? NSArray {
-            let count = serviceUUIDs.count
-            cell.servicesLabel.text = "\(count) service" + (count > 1 ? "s" : "")
+            let address = formatUUIDString(data: serviceUUIDs as! [CBUUID])
+            cell.addressLabel.text = address
         } else {
-            cell.servicesLabel.text = "No service"
+            cell.addressLabel.text = "No address"
         }
         
         let RSSI = peripheralInfo!["RSSI"]! as! NSNumber
@@ -220,5 +220,25 @@ func updateRSSI(_ RSSI: NSNumber, forCell cell: PeripheralCell) {
     }
     cell.rssiImage.image = rssiImage
     cell.rssiLabel.text = "\(RSSI) dBm"
+}
+
+func formatUUIDString(data: [CBUUID]) -> String {
+    var joinString = ""
+    for item in data {
+        let item = item.uuidString
+        let byte_1_tmp = item.startIndex..<item.index(item.startIndex, offsetBy: 2)
+        let byte_1 = item.substring(with: byte_1_tmp)
+        joinString += byte_1 + ":"
+        
+        let byte_2_tmp = item.index(item.startIndex, offsetBy: 2)..<item.index(item.startIndex, offsetBy: 4)
+        
+        let byte_2 = item.substring(with: byte_2_tmp)
+        joinString += byte_2 + ":"
+    }
+    let realString_tmp = joinString.startIndex..<joinString.index(joinString.startIndex, offsetBy: joinString.characters.count - 1)
+    joinString = joinString.substring(with: realString_tmp)
+    
+//    print("Chuoi sau khi xu ly \(joinString)")
+    return joinString
 }
 

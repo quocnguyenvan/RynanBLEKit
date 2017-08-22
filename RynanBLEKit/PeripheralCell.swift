@@ -14,7 +14,7 @@ class PeripheralCell : UITableViewCell {
     @IBOutlet var rssiLabel: UILabel!
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet weak var connectLabel: UILabel!
-    @IBOutlet var servicesLabel: UILabel!
+    @IBOutlet var addressLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

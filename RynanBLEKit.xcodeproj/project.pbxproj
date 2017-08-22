@@ -21,6 +21,8 @@
 		1788A3C41F3D49CF0042391C /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C31F3D49CF0042391C /* CentralManager.swift */; };
 		1788A3C61F3D5C4B0042391C /* Characteristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C51F3D5C4B0042391C /* Characteristic.swift */; };
 		1788A3C81F3DB4F30042391C /* PeripheralCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788A3C71F3DB4F30042391C /* PeripheralCell.swift */; };
+		179E8A501F4A6F8700749465 /* ServicesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179E8A4F1F4A6F8700749465 /* ServicesController.swift */; };
+		179E8A521F4A845900749465 /* CharacteristicsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179E8A511F4A845900749465 /* CharacteristicsController.swift */; };
 		17ADF8E91F4182B100A8927A /* PeripheralController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADF8E81F4182B100A8927A /* PeripheralController.swift */; };
 		17ADF8EB1F41AC0C00A8927A /* Injectables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADF8EA1F41AC0C00A8927A /* Injectables.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +44,8 @@
 		1788A3C31F3D49CF0042391C /* CentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManager.swift; sourceTree = "<group>"; };
 		1788A3C51F3D5C4B0042391C /* Characteristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Characteristic.swift; sourceTree = "<group>"; };
 		1788A3C71F3DB4F30042391C /* PeripheralCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralCell.swift; sourceTree = "<group>"; };
+		179E8A4F1F4A6F8700749465 /* ServicesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServicesController.swift; sourceTree = "<group>"; };
+		179E8A511F4A845900749465 /* CharacteristicsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacteristicsController.swift; sourceTree = "<group>"; };
 		17ADF8E81F4182B100A8927A /* PeripheralController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralController.swift; sourceTree = "<group>"; };
 		17ADF8EA1F41AC0C00A8927A /* Injectables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Injectables.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -92,6 +96,7 @@
 				1788A3C71F3DB4F30042391C /* PeripheralCell.swift */,
 				1788A3AD1F3D46870042391C /* AppDelegate.swift */,
 				1788A3AF1F3D46870042391C /* PeripheralsController.swift */,
+				179E8A4F1F4A6F8700749465 /* ServicesController.swift */,
 				1788A3B11F3D46870042391C /* Main.storyboard */,
 				1788A3B41F3D46870042391C /* Assets.xcassets */,
 				1788A3B61F3D46870042391C /* LaunchScreen.storyboard */,
@@ -101,6 +106,7 @@
 				17ADF8EA1F41AC0C00A8927A /* Injectables.swift */,
 				1772A2B21F453EEE0090A6EE /* ActivityView.swift */,
 				1772A2B71F45967C0090A6EE /* BluetoothRequireView.swift */,
+				179E8A511F4A845900749465 /* CharacteristicsController.swift */,
 			);
 			path = RynanBLEKit;
 			sourceTree = "<group>";
@@ -183,9 +189,11 @@
 				1788A3C61F3D5C4B0042391C /* Characteristic.swift in Sources */,
 				1788A3B01F3D46870042391C /* PeripheralsController.swift in Sources */,
 				17ADF8EB1F41AC0C00A8927A /* Injectables.swift in Sources */,
+				179E8A501F4A6F8700749465 /* ServicesController.swift in Sources */,
 				1788A3C01F3D46E20042391C /* BluetoothDelegate.swift in Sources */,
 				1788A3AE1F3D46870042391C /* AppDelegate.swift in Sources */,
 				1772A2B81F45967C0090A6EE /* BluetoothRequireView.swift in Sources */,
+				179E8A521F4A845900749465 /* CharacteristicsController.swift in Sources */,
 				175C1F611F4699F2001E513B /* Extensions.swift in Sources */,
 				17ADF8E91F4182B100A8927A /* PeripheralController.swift in Sources */,
 				1772A2B31F453EEE0090A6EE /* ActivityView.swift in Sources */,
