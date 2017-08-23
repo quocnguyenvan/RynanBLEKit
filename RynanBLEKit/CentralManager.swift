@@ -18,6 +18,9 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     public var discoveredPeripherals = [CBPeripheral]()
     public var peripheralsInfo: [UUID : Dictionary<String, AnyObject>] = [UUID : Dictionary<String, AnyObject>]()
     
+    private let DEVICE_SERVICE_UUID = "181C"
+    private let DEVICE_CHARACTERISTIC_UUID = "2A99"
+    
     var state: CBManagerState? {
         guard let manager = centralManager else { return nil }
         return CBManagerState(rawValue: manager.state.rawValue)
@@ -39,6 +42,10 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     static func getInstance() -> CentralManager {
         return instance
     }
+    
+//    public var isScanning: Bool {
+//        return centralManager!.isScanning
+//    }
     
     public var poweredOn: Bool {
         return centralManager?.state == .poweredOn
@@ -66,11 +73,15 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     }
     
     /** Start scan peripheral */
-    public func startScanPeripheral(withServices uuids: [CBUUID]? = nil, options: [String : Any]? = [CBCentralManagerScanOptionAllowDuplicatesKey: true]) {
+    public func startScanPeripheral(withServices uuids: [CBUUID]? = nil, timeout: TimeInterval = .infinity, options: [String : Any]? = [CBCentralManagerScanOptionAllowDuplicatesKey: true]) {
         guard let manager = centralManager, !isScanning else { return }
         self.isScanning = true
         manager.scanForPeripherals(withServices: uuids, options: options)
         print("Start scanning....")
+//        Timer.scheduledTimer(timeInterval: timeout!, target: self, selector: #selector(self.stopScanPeripheral), userInfo: nil, repeats: false)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
+            self.stopScanPeripheral()
+        }
     }
     
     /** Stop scan peripheral */
@@ -107,7 +118,8 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         if connectedPeripheral != nil {
             guard let services = connectedPeripheral?.services else { return }
             for service in services {
-                connectedPeripheral?.discoverCharacteristics(nil, for: service)
+                let thisCharacteristic = [CBUUID(string: DEVICE_CHARACTERISTIC_UUID)]
+                connectedPeripheral?.discoverCharacteristics(thisCharacteristic, for: service)
             }
         }
     }
@@ -157,14 +169,15 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         guard let delegate = bluetoothDelegate else { return }
 //        print("Central Manager -> didDiscoverPeripheral, rssi:\(RSSI)")
         
-        if !discoveredPeripherals.contains(peripheral) {
-            discoveredPeripherals.append(peripheral)
-            
-            peripheralsInfo[peripheral.identifier] = ["RSSI": RSSI, "advertisementData": advertisementData as AnyObject]
-            print("advertisementData: \(advertisementData) rssi: \(RSSI)")
-        } else {
+        let index = discoveredPeripherals.index { $0.identifier.uuidString == peripheral.identifier.uuidString }
+        if let index = index {
+            discoveredPeripherals[index] = peripheral
             peripheralsInfo[peripheral.identifier]!["RSSI"] = RSSI
             peripheralsInfo[peripheral.identifier]!["advertisementData"] = advertisementData as AnyObject?
+        } else {
+            discoveredPeripherals.append(peripheral)
+            peripheralsInfo[peripheral.identifier] = ["RSSI": RSSI, "advertisementData": advertisementData as AnyObject]
+            print("advertisementData: \(advertisementData) rssi: \(RSSI)")
         }
         delegate.didDiscoverPeripheral?(peripheral, advertisementData: advertisementData, RSSI: RSSI)
     }
@@ -179,7 +192,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         delegate.didConnectedPeripheral?(peripheral)
 //        self.stopScanPeripheral()
         peripheral.delegate = self
-        peripheral.discoverServices(nil)
+        peripheral.discoverServices([CBUUID(string: DEVICE_SERVICE_UUID)]) // nil
     }
     
     /** Connection failed */
@@ -198,6 +211,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         connected = false
         delegate.didDisconnectPeripheral?(peripheral)
         notificationCenter.post(name: NSNotification.Name(rawValue: "DisconnectNotify"), object: self)
+        connectedPeripheral?.delegate = nil
         discoveredPeripherals.removeAll()
     }
     
@@ -248,10 +262,14 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
             delegate.didFailToReadValueForCharacteristic?(error!)
             return
         }
-        delegate.didReadValueForCharacteristic?(characteristic)
+        if characteristic.uuid.uuidString == DEVICE_CHARACTERISTIC_UUID {
+            delegate.didReadValueForCharacteristic?(characteristic)
+        }
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         print("Central Manager -> write successfully!")
     }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) { }
 }
