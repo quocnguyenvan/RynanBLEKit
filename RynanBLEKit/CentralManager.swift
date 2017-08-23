@@ -15,8 +15,14 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     private(set) var centralManager: CBCentralManager?
     var bluetoothDelegate: BluetoothDelegate?
     
-    public var discoveredPeripherals = [CBPeripheral]()
+    public var discoveredPeripherals = [Peripheral]()
     public var peripheralsInfo: [UUID : Dictionary<String, AnyObject>] = [UUID : Dictionary<String, AnyObject>]()
+    
+    fileprivate var scanChangesHandler: ((Peripheral) -> Void)?
+    fileprivate var scanCompleteHandler: (([Peripheral]) -> Void)?
+    
+    open var scannedDevices = Set<Peripheral>()
+    fileprivate var connectedDevices = [String:Peripheral]()
     
     private let DEVICE_SERVICE_UUID = "181C"
     private let DEVICE_CHARACTERISTIC_UUID = "2A99"
@@ -95,24 +101,40 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     }
     
     /** Connect to peripheral */
-    func connectPeripheral(_ cbPeripheral: CBPeripheral) {
+    func connectPeripheral(_ cbPeripheral: Peripheral) {
         guard let manager = centralManager, !isConnecting else { return }
-        manager.cancelPeripheralConnection(cbPeripheral)
+        manager.cancelPeripheralConnection(cbPeripheral.peripheral)
         self.isConnecting = true
         print("--->Connecting...: \(isConnecting)")
 //        connectedPeripheral = Peripheral(peripheral: cbPeripheral)
-        manager.connect(cbPeripheral, options: [CBConnectPeripheralOptionNotifyOnDisconnectionKey : true])
+        connectedDevices[cbPeripheral.id] = cbPeripheral
+        
+        manager.connect(cbPeripheral.peripheral, options: [CBConnectPeripheralOptionNotifyOnDisconnectionKey : true])
     }
     
     /** Disconnect peripheral */
-    func disconnectPeripheral() {
+    func disconnectPeripheral(_ peripheral: Peripheral) {
         guard let manager = centralManager else { return }
-        if connectedPeripheral != nil {
-            manager.cancelPeripheralConnection(connectedPeripheral!)
-//            startScanPeripheral()
-            connectedPeripheral = nil
-        }
+//        if connectedPeripheral != nil {
+//            manager.cancelPeripheralConnection(connectedPeripheral!)
+////            startScanPeripheral()
+//            connectedPeripheral = nil
+//        }
+        print("Disconnecting from device - \(peripheral.id)")
+        connectedDevices[peripheral.id] = peripheral
+        manager.cancelPeripheralConnection(peripheral.peripheral)
     }
+    
+    //    func connect(to device: Peripheral) {
+    //        connectedDevices[device.id] = device
+    //        centralManager?.connect(device.peripheral, options: nil)
+    //    }
+    //
+    //    func disconnect(from device: Peripheral) {
+    //        connectedDevices[device.id] = device
+    //        print("Disconnecting from device - \(device.id)")
+    //        centralManager?.cancelPeripheralConnection(device.peripheral)
+    //    }
 
     func discoverCharacteristics() {
         if connectedPeripheral != nil {
@@ -169,16 +191,18 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         guard let delegate = bluetoothDelegate else { return }
 //        print("Central Manager -> didDiscoverPeripheral, rssi:\(RSSI)")
         
-        let index = discoveredPeripherals.index { $0.identifier.uuidString == peripheral.identifier.uuidString }
+        let discoveredPeripheral = Peripheral(centralManager: self, peripheral: peripheral)
+        let index = discoveredPeripherals.index { $0.identifier.uuidString == discoveredPeripheral.identifier.uuidString }
         if let index = index {
-            discoveredPeripherals[index] = peripheral
-            peripheralsInfo[peripheral.identifier]!["RSSI"] = RSSI
-            peripheralsInfo[peripheral.identifier]!["advertisementData"] = advertisementData as AnyObject?
+            discoveredPeripherals[index] = discoveredPeripheral
+            peripheralsInfo[discoveredPeripheral.identifier]!["RSSI"] = RSSI
+            peripheralsInfo[discoveredPeripheral.identifier]!["advertisementData"] = advertisementData as AnyObject?
         } else {
-            discoveredPeripherals.append(peripheral)
-            peripheralsInfo[peripheral.identifier] = ["RSSI": RSSI, "advertisementData": advertisementData as AnyObject]
+            discoveredPeripherals.append(discoveredPeripheral)
+            peripheralsInfo[discoveredPeripheral.identifier] = ["RSSI": RSSI, "advertisementData": advertisementData as AnyObject]
             print("advertisementData: \(advertisementData) rssi: \(RSSI)")
         }
+        
         delegate.didDiscoverPeripheral?(peripheral, advertisementData: advertisementData, RSSI: RSSI)
     }
     
@@ -191,8 +215,10 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         connectedPeripheral = peripheral
         delegate.didConnectedPeripheral?(peripheral)
 //        self.stopScanPeripheral()
-        peripheral.delegate = self
-        peripheral.discoverServices([CBUUID(string: DEVICE_SERVICE_UUID)]) // nil
+//        peripheral.delegate = self
+//        peripheral.discoverServices([CBUUID(string: DEVICE_SERVICE_UUID)]) // nil
+        
+        connectedDevices[peripheral.identifier.uuidString]?.didConnect()
     }
     
     /** Connection failed */
@@ -202,6 +228,8 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         isConnecting = false
         connected = false
         delegate.failToConnectPeripheral?(peripheral, error: error!)
+        
+        connectedDevices[peripheral.identifier.uuidString]?.didDisconnect()
     }
     
     /** Peripheral has been disconnected */
@@ -210,9 +238,11 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         guard let delegate = self.bluetoothDelegate else { return }
         connected = false
         delegate.didDisconnectPeripheral?(peripheral)
-        notificationCenter.post(name: NSNotification.Name(rawValue: "DisconnectNotify"), object: self)
+//        notificationCenter.post(name: NSNotification.Name(rawValue: "DisconnectNotify"), object: self)
         connectedPeripheral?.delegate = nil
         discoveredPeripherals.removeAll()
+        
+        connectedDevices[peripheral.identifier.uuidString]?.didDisconnect()
     }
     
     /** Will restore state */
@@ -226,21 +256,24 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         print("Central Manager -> didDiscoverServices")
         guard let delegate = self.bluetoothDelegate else { return }
-        connectedPeripheral = peripheral
-        if error != nil { return }
+//        connectedPeripheral = peripheral
+//        if error != nil { return }
         
         delegate.didDiscoverServices?(peripheral)
+        
+        connectedDevices[peripheral.identifier.uuidString]?.didDiscoverServices(error: error)
     }
     
     /** Characteristics were discovered */
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         print("Central Manager -> didDiscoverCharacteristicsForService")
         guard let delegate = self.bluetoothDelegate else { return }
-        guard error == nil else {
-            delegate.didFailToDiscoverCharacteritics?(error!)
-            return
-        }
+//        guard error == nil else {
+//            delegate.didFailToDiscoverCharacteritics?(error!)
+//            return
+//        }
         delegate.didDiscoverCharacteritics?(service)
+        connectedDevices[peripheral.identifier.uuidString]?.didDiscoverCharacteristicsFor(service: service, error: error)
     }
     
     /** Discovery descriptor when the peripheral has found the descriptor for the characteristic */
@@ -257,14 +290,16 @@ public class CentralManager : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     /** Update value */
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         print("Central Manager -> didUpdateValueForCharacteristic")
-        guard let delegate = self.bluetoothDelegate else { return }
-        guard error == nil else {
-            delegate.didFailToReadValueForCharacteristic?(error!)
-            return
-        }
-        if characteristic.uuid.uuidString == DEVICE_CHARACTERISTIC_UUID {
-            delegate.didReadValueForCharacteristic?(characteristic)
-        }
+//        guard let delegate = self.bluetoothDelegate else { return }
+//        guard error == nil else {
+//            delegate.didFailToReadValueForCharacteristic?(error!)
+//            return
+//        }
+//        if characteristic.uuid.uuidString == DEVICE_CHARACTERISTIC_UUID {
+//            delegate.didReadValueForCharacteristic?(characteristic)
+//        }
+        
+        connectedDevices[peripheral.identifier.uuidString]?.didUpdateValueFor(characteristic: characteristic, error: error)
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {

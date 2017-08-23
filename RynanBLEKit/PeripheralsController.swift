@@ -20,6 +20,8 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
     var activityView: ActivityView?
     let centralManager = CentralManager.getInstance()
     var peripheralsArray : [CBPeripheral] = []
+    fileprivate var devices = [Peripheral]()
+    
     var peripheralsInfo : [UUID : Dictionary<String, AnyObject>] = [UUID : Dictionary<String, AnyObject>]()
     
     @IBOutlet weak var tblScanned: UITableView!
@@ -51,9 +53,9 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if centralManager.connectedPeripheral != nil {
-            centralManager.disconnectPeripheral()
-        }
+//        if centralManager.connectedPeripheral != nil {
+//            centralManager.disconnectPeripheral()
+//        }
         centralManager.bluetoothDelegate = self
 //        centralManager.peripheralsInfo.removeAll()
 //        centralManager.discoveredPeripherals.removeAll()
@@ -89,13 +91,19 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
         print("isScanning: \(centralManager.isScanning)")
         guard scanEnabled else { return }
         guard !centralManager.isScanning else { return }
-        centralManager.startScanPeripheral()
+        centralManager.startScanPeripheral(timeout: 30)
+        
+//        centralManager.scan(for: 1) { devices in
+//            print("devices: \(devices)")
+//            self.devices = devices
+//            self.tblScanned.reloadData()
+//        }
     }
     
     func stopScan() {
         scanEnabled = false
-        centralManager.stopScanPeripheral()
-        centralManager.disconnectPeripheral()
+//        centralManager.stopScanPeripheral()
+//        centralManager.disconnectPeripheral()
         self.tblScanned.reloadData()
     }
     
@@ -112,8 +120,8 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
             BluetoothRequireView.show()
             self.scanEnabled = false
             self.setScanButton()
-            centralManager.discoveredPeripherals.removeAll()
-            centralManager.peripheralsInfo.removeAll()
+//            centralManager.discoveredPeripherals.removeAll()
+//            centralManager.peripheralsInfo.removeAll()
             tblScanned.reloadData()
         case .unauthorized:
             print("MainController -> State : Unauthorized")
@@ -140,8 +148,8 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
             print("MainController -> didDiscoverService:\(services)")
             ActivityView.hide()
             let vc = storyboard?.instantiateViewController(withIdentifier: "ServicesController") as! ServicesController
-            let peripheralInfo = centralManager.peripheralsInfo[peripheral.identifier]
-            vc.advertisementData = peripheralInfo!["advertisementData"] as? Dictionary<String, AnyObject>
+//            let peripheralInfo = centralManager.peripheralsInfo[peripheral.identifier]
+//            vc.advertisementData = peripheralInfo!["advertisementData"] as? Dictionary<String, AnyObject>
             self.navigationController?.pushViewController(vc, animated: true)
             
 //            for service in services {
@@ -154,6 +162,29 @@ class PeripheralsController: UIViewController, BluetoothDelegate {
 //            }
         }
     }
+    
+    func connect(device: Peripheral) {
+        device.connect(complete: { isConnected in
+            guard isConnected == true else { return }
+    
+            print("App: Device is connected? \(isConnected)")
+            print("App: Starting service discovery...")
+            device.discoverServices(complete: { services, error in
+                services.forEach({
+                    print("App: Discovering characteristics for service: \($0.uuid.uuidString)")
+                    device.discoverCharacteristics(for: $0, complete: { service, characteristics, error in
+                        characteristics.forEach({
+                            print("App: Discovered characteristic: \($0.uuid.uuidString) in \(service.uuid.uuidString)")
+                        })
+                        
+                        if service == services.last {
+                            print("App: All services/characteristics discovered")
+                        }
+                    })
+                })
+            })
+        })
+    }
 }
 
 extension PeripheralsController: UITableViewDataSource {
@@ -163,19 +194,22 @@ extension PeripheralsController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return centralManager.discoveredPeripherals.count// peripheralsArray.count
+//        return centralManager.discoveredPeripherals.count// peripheralsArray.count
+        return centralManager.discoveredPeripherals.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PeripheralCell", for: indexPath) as! PeripheralCell
         
+//        let device = devices[indexPath.row]
+        
         let peripheral = centralManager.discoveredPeripherals[indexPath.row]
         let peripheralInfo = centralManager.peripheralsInfo[peripheral.identifier]
         //        if let peripheralCell = cell as? ScannedPeripheralCell {
         //            peripheralCell.configure(with: peripheral)
         //        }
-        cell.nameLabel.text = peripheral.peripheralName
+        cell.nameLabel.text = peripheral.name
         
         if let serviceUUIDs = peripheralInfo!["advertisementData"]!["kCBAdvDataServiceUUIDs"] as? NSArray {
             let address = formatUUIDString(data: serviceUUIDs as! [CBUUID])
@@ -194,11 +228,14 @@ extension PeripheralsController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let peripheral = centralManager.discoveredPeripherals[indexPath.row]
-        activityView = ActivityView.show()
-        print("Connecting to: \(String(describing: peripheral.name))")
-        centralManager.connectPeripheral(peripheral)
+//        let peripheral = centralManager.discoveredPeripherals[indexPath.row]
+//        activityView = ActivityView.show()
+//        print("Connecting to: \(String(describing: peripheral.name))")
+//        centralManager.connectPeripheral(peripheral)
+        
 //        centralManager.stopScanPeripheral()
+//        let peripheral = devices[indexPath.row]
+//        self.connect(device: peripheral)
     }
 }
 
@@ -223,22 +260,21 @@ func updateRSSI(_ RSSI: NSNumber, forCell cell: PeripheralCell) {
 }
 
 func formatUUIDString(data: [CBUUID]) -> String {
-    var joinString = ""
+    var resultString = ""
     for item in data {
         let item = item.uuidString
         let byte_1_tmp = item.startIndex..<item.index(item.startIndex, offsetBy: 2)
         let byte_1 = item.substring(with: byte_1_tmp)
-        joinString += byte_1 + ":"
+        resultString += byte_1 + ":"
         
         let byte_2_tmp = item.index(item.startIndex, offsetBy: 2)..<item.index(item.startIndex, offsetBy: 4)
         
         let byte_2 = item.substring(with: byte_2_tmp)
-        joinString += byte_2 + ":"
+        resultString += byte_2 + ":"
     }
-    let realString_tmp = joinString.startIndex..<joinString.index(joinString.startIndex, offsetBy: joinString.characters.count - 1)
-    joinString = joinString.substring(with: realString_tmp)
+    let realString_tmp = resultString.startIndex..<resultString.index(resultString.startIndex, offsetBy: resultString.characters.count - 1)
+    resultString = resultString.substring(with: realString_tmp)
     
-//    print("Chuoi sau khi xu ly \(joinString)")
-    return joinString
+    return resultString
 }
 
